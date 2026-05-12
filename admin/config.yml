@@ -1,0 +1,96 @@
+backend:
+  name: git-gateway
+  branch: main # Branch to update (optional; defaults to master)
+  repo: voltpro/website # Your GitHub repository
+
+media_folder: "images/uploads" # Media files will be stored in this repo folder
+public_folder: "/images/uploads" # The src attribute for uploaded media will begin with this URL
+
+collections:
+  # Work in Progress Projects
+  - name: "wip-projects"
+    label: "مشاريع تحت الإنشاء"
+    folder: "data/wip"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "العنوان", name: "title", widget: "string", required: true }
+      - { label: "الوصف", name: "description", widget: "markdown", required: true }
+      - { label: "السنة", name: "year", widget: "string", default: "2024" }
+      - { label: "العميل", name: "client", widget: "string" }
+      - { label: "الفئة", name: "category", widget: "select", options: ["residential", "commercial", "industrial", "sports"] }
+      - { label: "الصور", name: "images", widget: "list", field: { label: "صورة", name: "image", widget: "image" } }
+      - { label: "الحالة", name: "status", widget: "hidden", default: "under_construction" }
+
+  # Completed Projects
+  - name: "completed-projects"
+    label: "مشاريع مكتملة"
+    folder: "data/done"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "العنوان", name: "title", widget: "string", required: true }
+      - { label: "الوصف", name: "description", widget: "markdown", required: true }
+      - { label: "السنة", name: "year", widget: "string", default: "2024" }
+      - { label: "العميل", name: "client", widget: "string" }
+      - { label: "الفئة", name: "category", widget: "select", options: ["residential", "commercial", "industrial", "sports"] }
+      - { label: "الصور", name: "images", widget: "list", field: { label: "صورة", name: "image", widget: "image" } }
+      - { label: "الحالة", name: "status", widget: "hidden", default: "completed" }
+
+  # Site Settings
+  - name: "settings"
+    label: "إعدادات الموقع"
+    files:
+      - file: "data/settings.json"
+        label: "الإعدادات العامة"
+        name: "general-settings"
+        fields:
+          - { label: "اسم الشركة", name: "company_name", widget: "string", default: "Volt Pro" }
+          - { label: "شعار الشركة", name: "company_tagline", widget: "string", default: "مجموعة الصناعيين والحرفيين المتخصصين" }
+          - { label: "رقم الهاتف", name: "phone", widget: "string", default: "+966573423623" }
+          - { label: "واتساب", name: "whatsapp", widget: "string", default: "0573423623" }
+          - { label: "البريد الإلكتروني", name: "email", widget: "string", default: "info@voltpro.com" }
+          - label: "روابط التواصل الاجتماعي"
+            name: "social"
+            widget: "object"
+            fields:
+              - { label: "Instagram", name: "instagram", widget: "string" }
+              - { label: "LinkedIn", name: "linkedin", widget: "string" }
+              - { label: "Facebook", name: "facebook", widget: "string" }
+              - { label: "Twitter", name: "twitter", widget: "string" }
+          - label: "الموقع"
+            name: "location"
+            widget: "object"
+            fields:
+              - { label: "المدينة", name: "city", widget: "string", default: "Riyadh" }
+              - { label: "الدولة", name: "country", widget: "string", default: "SA" }
+              - label: "الإحداثيات"
+                name: "coordinates"
+                widget: "object"
+                fields:
+                  - { label: "خط العرض", name: "latitude", widget: "string", default: "24.7136" }
+                  - { label: "خط الطول", name: "longitude", widget: "string", default: "46.6753" }
+
+# Site configuration
+site_url: "https://voltpro.netlify.app"
+display_url: "https://voltpro.netlify.app"
+
+# Editor configuration
+editor:
+  preview: false
+
+# Publishing options
+publish_mode: editorial_workflow
+
+# Authentication
+auth:
+  providers:
+    - name: github
+      client_id: "your-github-client-id"
+      client_secret: "your-github-client-secret"
+
+# Logo and branding
+logo_url: "/images/logo.png"
+
+# Localized interface
+locale: "ar"

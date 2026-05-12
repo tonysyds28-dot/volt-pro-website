@@ -1,0 +1,52 @@
+[
+  {
+    "id": "riyadh-club",
+    "title": "نادي الرياض - البنية التحتية الكهربائية",
+    "description": "تنفيذ البنية التحتية الكهربائية بالكامل لنادٍ رياضي بالرياض عام 2024، وفق أعلى معايير الدقة وتوزيع الأحمال، ليعمل بكفاءة واستقرار تام وبلا أي أعطال حتى اليوم.",
+    "year": "2024",
+    "client": "نادي رياضي",
+    "category": "sports",
+    "status": "completed",
+    "images": [
+      "/image/Riyadh1.jpeg",
+      "/image/Riyadh2.jpeg",
+      "/image/Riyadh3.jpeg",
+      "/image/Riyadh4.jpeg",
+      "/image/Riyadh5.jpeg",
+      "/image/Riyadh6.jpeg",
+      "/image/Riyadh7.jpeg"
+    ]
+  },
+  {
+    "id": "smart-home-rehab",
+    "title": "سمارت هوم - شقة الرحاب",
+    "description": "تنفيذ نظام 'سمارت هوم' متكامل لشقة سكنية بالرحاب عام 2020، يشمل تأسيس أنظمة صوتية مستقلة لكل غرفة مرتبطة بالشاشات الذكية، وتوزيع أجهزة تقوية إشارة (Wi-Fi) لضمان تغطية كاملة. النظام يعمل بكفاءة تامة وبدون أعطال حتى اليوم، مع تقديم صيانة دورية وتحديثات مستمرة للأجهزة.",
+    "year": "2020",
+    "client": "شقة سكنية",
+    "category": "residential",
+    "status": "completed",
+    "images": [
+      "/image/Rehab1.jpeg",
+      "/image/Rehab2.jpeg",
+      "/image/Rehab5.jpeg",
+      "/image/Rehab4.jpeg",
+      "/image/Rehab5.jpeg"
+    ]
+  },
+  {
+    "id": "shurooq-villa",
+    "title": "فيلا الشروق - التأسيس الكهربائي",
+    "description": "تأسيس وتشطيب كهرباء فيلا بالشروق عام 2019، تعمل بكفاءة تامة وبدون أعطال حتى اليوم، مع استمرار المتابعة مع العميل لتنفيذ أي إضافات أو تجديدات.",
+    "year": "2019",
+    "client": "فيلا سكنية",
+    "category": "residential",
+    "status": "completed",
+    "images": [
+      "/image/sunrise1.jpeg",
+      "/image/sunrise2.jpeg",
+      "/image/sunrise3.jpeg",
+      "/image/sunrise4.jpeg",
+      "/image/sunrise5.jpeg"
+    ]
+  }
+]

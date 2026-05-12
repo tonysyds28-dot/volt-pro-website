@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volt Pro - لوحة التحكم</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-bolt"></i> Volt <span>Pro</span> Admin
+                </div>
+                <div class="header-actions">
+                    <button id="saveBtn" class="btn btn-primary">
+                        <i class="fas fa-save"></i> حفظ التغييرات
+                    </button>
+                    <button id="exportBtn" class="btn btn-secondary">
+                        <i class="fas fa-download"></i> تصدير YAML
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="#projects" class="nav-link active"><i class="fas fa-project-diagram"></i> المشاريع</a></li>
+                        <li><a href="#settings" class="nav-link"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                        <li><a href="#site" class="nav-link"><i class="fas fa-globe"></i> إعدادات الموقع</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Projects Section -->
+                <section id="projects" class="section active">
+                    <div class="section-header">
+                        <h2>إدارة المشاريع</h2>
+                        <button id="addProjectBtn" class="btn btn-success">
+                            <i class="fas fa-plus"></i> إضافة مشروع جديد
+                        </button>
+                    </div>
+
+                    <!-- Project Tabs -->
+                    <div class="project-tabs">
+                        <button class="tab-btn active" data-tab="under_construction">مشاريع تحت الإنشاء</button>
+                        <button class="tab-btn" data-tab="completed">مشاريع مكتملة</button>
+                    </div>
+
+                    <!-- Projects List -->
+                    <div class="projects-container">
+                        <div id="under_construction" class="projects-list active">
+                            <!-- Projects will be loaded here -->
+                        </div>
+                        <div id="completed" class="projects-list">
+                            <!-- Projects will be loaded here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings" class="section">
+                    <div class="section-header">
+                        <h2>الإعدادات العامة</h2>
+                    </div>
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label for="autoSave">الحفظ التلقائي</label>
+                            <input type="checkbox" id="autoSave" checked>
+                        </div>
+                        <div class="form-group">
+                            <label for="backupEnabled">النسخ الاحتياطي</label>
+                            <input type="checkbox" id="backupEnabled" checked>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Site Settings Section -->
+                <section id="site" class="section">
+                    <div class="section-header">
+                        <h2>إعدادات الموقع</h2>
+                    </div>
+                    <div class="site-settings-form">
+                        <div class="form-group">
+                            <label for="companyName">اسم الشركة</label>
+                            <input type="text" id="companyName" value="Volt Pro">
+                        </div>
+                        <div class="form-group">
+                            <label for="companyTagline">شعار الشركة</label>
+                            <input type="text" id="companyTagline" value="مجموعة الصناعيين والحرفيين المتخصصين">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">رقم الهاتف</label>
+                            <input type="tel" id="phone" value="+966573423623">
+                        </div>
+                        <div class="form-group">
+                            <label for="whatsapp">واتساب</label>
+                            <input type="text" id="whatsapp" value="0573423623">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">البريد الإلكتروني</label>
+                            <input type="email" id="email" value="info@voltpro.com">
+                        </div>
+                        <div class="social-links">
+                            <h3>روابط التواصل الاجتماعي</h3>
+                            <div class="form-group">
+                                <label for="instagram">Instagram</label>
+                                <input type="url" id="instagram" value="https://www.instagram.com/voltprogroup">
+                            </div>
+                            <div class="form-group">
+                                <label for="linkedin">LinkedIn</label>
+                                <input type="url" id="linkedin" value="https://www.linkedin.com/company/voltprogroup">
+                            </div>
+                            <div class="form-group">
+                                <label for="facebook">Facebook</label>
+                                <input type="url" id="facebook" value="https://www.facebook.com/alajadhalmtqnhllmqawlat">
+                            </div>
+                            <div class="form-group">
+                                <label for="twitter">Twitter</label>
+                                <input type="url" id="twitter" value="https://twitter.com/voltprogroup">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">إضافة مشروع جديد</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="projectForm">
+                    <div class="form-group">
+                        <label for="projectId">معرف المشروع</label>
+                        <input type="text" id="projectId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectTitle">عنوان المشروع</label>
+                        <input type="text" id="projectTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectDescription">وصف المشروع</label>
+                        <textarea id="projectDescription" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectStatus">الحالة</label>
+                        <select id="projectStatus">
+                            <option value="under_construction">تحت الإنشاء</option>
+                            <option value="completed">مكتمل</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectYear">السنة</label>
+                        <input type="text" id="projectYear">
+                    </div>
+                    <div class="form-group">
+                        <label for="projectClient">العميل</label>
+                        <input type="text" id="projectClient">
+                    </div>
+                    <div class="form-group">
+                        <label for="projectCategory">الفئة</label>
+                        <select id="projectCategory">
+                            <option value="residential">سكني</option>
+                            <option value="commercial">تجاري</option>
+                            <option value="industrial">صناعي</option>
+                            <option value="sports">رياضي</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>الصور</label>
+                        <div id="imagesContainer">
+                            <div class="image-input-group">
+                                <input type="text" class="image-input" placeholder="رابط الصورة">
+                                <button type="button" class="btn btn-sm btn-danger remove-image">حذف</button>
+                            </div>
+                        </div>
+                        <button type="button" id="addImageBtn" class="btn btn-sm btn-secondary">إضافة صورة</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancelBtn" class="btn btn-secondary">إلغاء</button>
+                <button type="button" id="saveProjectBtn" class="btn btn-primary">حفظ المشروع</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

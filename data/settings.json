@@ -1,0 +1,23 @@
+{
+  "company_name": "Volt Pro",
+  "company_tagline": "مجموعة الصناعيين والحرفيين المتخصصين",
+  "contact": {
+    "phone": "+966573423623",
+    "whatsapp": "0573423623",
+    "email": "info@voltpro.com"
+  },
+  "social": {
+    "instagram": "https://www.instagram.com/voltprogroup",
+    "linkedin": "https://www.linkedin.com/company/voltprogroup",
+    "facebook": "https://www.facebook.com/alajadhalmtqnhllmqawlat",
+    "twitter": "https://twitter.com/voltprogroup"
+  },
+  "location": {
+    "city": "Riyadh",
+    "country": "SA",
+    "coordinates": {
+      "latitude": "24.7136",
+      "longitude": "46.6753"
+    }
+  }
+}
