@@ -17,28 +17,30 @@ class VoltProAdmin {
     // Load projects data from Decap CMS structure
     async loadProjectsData() {
         try {
-            // Load settings
-            const settingsResponse = await fetch('data/settings.json');
-            const settings = await settingsResponse.json();
+            // Try to load from localStorage first (for demo)
+            const savedSettings = localStorage.getItem('voltpro_settings');
+            const savedWipProjects = localStorage.getItem('voltpro_under_construction_projects');
+            const savedCompletedProjects = localStorage.getItem('voltpro_completed_projects');
             
-            // Load WIP projects (under construction)
-            const wipResponse = await fetch('data/wip/index.json');
-            let wipProjects = [];
-            try {
+            let settings, wipProjects, completedProjects;
+            
+            if (savedSettings && savedWipProjects && savedCompletedProjects) {
+                // Load from localStorage
+                settings = JSON.parse(savedSettings);
+                wipProjects = JSON.parse(savedWipProjects);
+                completedProjects = JSON.parse(savedCompletedProjects);
+                console.log('Loaded from localStorage');
+            } else {
+                // Load from files
+                const settingsResponse = await fetch('data/settings.json');
+                settings = await settingsResponse.json();
+                
+                const wipResponse = await fetch('data/wip/index.json');
                 wipProjects = await wipResponse.json();
-            } catch (e) {
-                // If index.json doesn't exist, try to load individual files
-                wipProjects = await this.loadMarkdownFiles('data/wip');
-            }
-            
-            // Load completed projects
-            const doneResponse = await fetch('data/done/index.json');
-            let completedProjects = [];
-            try {
+                
+                const doneResponse = await fetch('data/done/index.json');
                 completedProjects = await doneResponse.json();
-            } catch (e) {
-                // If index.json doesn't exist, try to load individual files
-                completedProjects = await this.loadMarkdownFiles('data/done');
+                console.log('Loaded from files');
             }
             
             this.projectsData = {
@@ -762,21 +764,40 @@ class VoltProAdmin {
     // Save all changes
     async saveAllChanges() {
         try {
-            const yamlText = jsyaml.dump(this.projectsData, {
-                indent: 2,
-                lineWidth: 120,
-                noRefs: true
-            });
-
-            // In a real implementation, this would save to the server
-            console.log('Saving YAML:', yamlText);
+            // Save settings
+            await this.saveSettings();
             
-            // For demo purposes, we'll just show success message
+            // Save WIP projects
+            await this.saveProjects('under_construction', 'data/wip');
+            
+            // Save completed projects
+            await this.saveProjects('completed', 'data/done');
+            
             this.showMessage('تم حفظ جميع التغييرات بنجاح', 'success');
         } catch (error) {
             console.error('Error saving changes:', error);
-            this.showMessage('خطأ في حفظ التغييرات', 'error');
+            this.showMessage('خطأ في حفظ التغييرات: ' + error.message, 'error');
         }
+    }
+
+    // Save settings to JSON file
+    async saveSettings() {
+        // For demo purposes, save to localStorage
+        localStorage.setItem('voltpro_settings', JSON.stringify(this.projectsData.site_config, null, 2));
+        
+        // In production, this would be a server API call
+        console.log('Settings saved:', this.projectsData.site_config);
+    }
+
+    // Save projects to JSON file
+    async saveProjects(status, directory) {
+        const projects = this.projectsData.projects[status];
+        
+        // For demo purposes, save to localStorage
+        localStorage.setItem(`voltpro_${status}_projects`, JSON.stringify(projects, null, 2));
+        
+        // In production, this would be a server API call
+        console.log(`${status} projects saved:`, projects);
     }
 
     // Export YAML
@@ -828,7 +849,7 @@ class VoltProAdmin {
     }
 
     // Save site settings
-    saveSiteSettings() {
+    async saveSiteSettings() {
         if (!this.projectsData) return;
 
         this.projectsData.site_config = {
@@ -855,9 +876,10 @@ class VoltProAdmin {
             }
         };
 
-        if (this.autoSaveEnabled) {
-            this.saveAllChanges();
-        }
+        // Save to localStorage
+        await this.saveSettings();
+        
+        this.showMessage('تم حفظ إعدادات الموقع بنجاح', 'success');
     }
 
     // View project details

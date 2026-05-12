@@ -8,13 +8,13 @@
     "category": "commercial",
     "status": "under_construction",
     "images": [
-      "/image/rashid1.jpeg",
-      "/image/rashid2.jpeg",
-      "/image/rashid3.jpeg",
-      "/image/rashid4.jpeg",
-      "/image/rashid5.jpeg",
-      "/image/rashid6.jpeg",
-      "/image/rashid7.jpeg"
+      "image/factory1.jpeg",
+      "image/factory2.jpeg",
+      "image/factory3.jpeg",
+      "image/factory4.jpeg",
+      "image/factory5.jpeg",
+      "image/factory6.jpeg",
+      "image/factory7.jpeg"
     ]
   }
 ]
