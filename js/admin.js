@@ -785,6 +785,12 @@ class VoltProAdmin {
         // For demo purposes, save to localStorage
         localStorage.setItem('voltpro_settings', JSON.stringify(this.projectsData.site_config, null, 2));
         
+        // Trigger storage event to notify main site
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: 'voltpro_settings',
+            newValue: JSON.stringify(this.projectsData.site_config, null, 2)
+        }));
+        
         // In production, this would be a server API call
         console.log('Settings saved:', this.projectsData.site_config);
     }
@@ -795,6 +801,12 @@ class VoltProAdmin {
         
         // For demo purposes, save to localStorage
         localStorage.setItem(`voltpro_${status}_projects`, JSON.stringify(projects, null, 2));
+        
+        // Trigger storage event to notify main site
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: `voltpro_${status}_projects`,
+            newValue: JSON.stringify(projects, null, 2)
+        }));
         
         // In production, this would be a server API call
         console.log(`${status} projects saved:`, projects);

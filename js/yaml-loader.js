@@ -9,33 +9,62 @@ class YamlSiteLoader {
         await this.loadProjectsData();
         this.renderProjects();
         this.updateSiteInfo();
+        
+        // Set up auto-refresh to sync with admin panel changes
+        this.setupAutoRefresh();
+    }
+
+    // Setup auto-refresh to sync with admin panel
+    setupAutoRefresh() {
+        // Listen for storage changes from admin panel
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'voltpro_settings' || 
+                e.key === 'voltpro_under_construction_projects' || 
+                e.key === 'voltpro_completed_projects') {
+                console.log('Detected changes from admin panel, refreshing...');
+                this.loadProjectsData().then(() => {
+                    this.renderProjects();
+                    this.updateSiteInfo();
+                });
+            }
+        });
+        
+        // Also check for changes every 2 seconds (for same-tab updates)
+        setInterval(() => {
+            this.loadProjectsData().then(() => {
+                this.renderProjects();
+                this.updateSiteInfo();
+            });
+        }, 2000);
     }
 
     // Load projects data from Decap CMS structure
     async loadProjectsData() {
         try {
-            // Load settings
-            const settingsResponse = await fetch('data/settings.json');
-            const settings = await settingsResponse.json();
+            // Try to load from localStorage first (to sync with admin panel)
+            const savedSettings = localStorage.getItem('voltpro_settings');
+            const savedWipProjects = localStorage.getItem('voltpro_under_construction_projects');
+            const savedCompletedProjects = localStorage.getItem('voltpro_completed_projects');
             
-            // Load WIP projects (under construction)
-            const wipResponse = await fetch('data/wip/index.json');
-            let wipProjects = [];
-            try {
+            let settings, wipProjects, completedProjects;
+            
+            if (savedSettings && savedWipProjects && savedCompletedProjects) {
+                // Load from localStorage (sync with admin panel)
+                settings = JSON.parse(savedSettings);
+                wipProjects = JSON.parse(savedWipProjects);
+                completedProjects = JSON.parse(savedCompletedProjects);
+                console.log('Loaded from localStorage (synced with admin panel)');
+            } else {
+                // Load from files (fallback)
+                const settingsResponse = await fetch('data/settings.json');
+                settings = await settingsResponse.json();
+                
+                const wipResponse = await fetch('data/wip/index.json');
                 wipProjects = await wipResponse.json();
-            } catch (e) {
-                // If index.json doesn't exist, try to load individual files
-                wipProjects = await this.loadMarkdownFiles('data/wip');
-            }
-            
-            // Load completed projects
-            const doneResponse = await fetch('data/done/index.json');
-            let completedProjects = [];
-            try {
+                
+                const doneResponse = await fetch('data/done/index.json');
                 completedProjects = await doneResponse.json();
-            } catch (e) {
-                // If index.json doesn't exist, try to load individual files
-                completedProjects = await this.loadMarkdownFiles('data/done');
+                console.log('Loaded from files (fallback)');
             }
             
             this.projectsData = {
