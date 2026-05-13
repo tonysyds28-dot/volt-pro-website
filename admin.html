@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volt Pro - لوحة التحكم</title>
     <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/admin-additions.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -20,8 +21,17 @@
                     <button id="saveBtn" class="btn btn-primary">
                         <i class="fas fa-save"></i> حفظ التغييرات
                     </button>
+                    <button id="backupBtn" class="btn btn-success">
+                        <i class="fas fa-cloud-upload-alt"></i> نسخة احتياطية
+                    </button>
+                    <button id="restoreBtn" class="btn btn-warning">
+                        <i class="fas fa-cloud-download-alt"></i> استرجاع
+                    </button>
                     <button id="exportBtn" class="btn btn-secondary">
                         <i class="fas fa-download"></i> تصدير YAML
+                    </button>
+                    <button id="logoutBtn" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> خروج
                     </button>
                 </div>
             </div>
@@ -34,6 +44,7 @@
                 <nav class="sidebar-nav">
                     <ul>
                         <li><a href="#projects" class="nav-link active"><i class="fas fa-project-diagram"></i> المشاريع</a></li>
+                        <li><a href="#about" class="nav-link"><i class="fas fa-info-circle"></i> من نحن</a></li>
                         <li><a href="#settings" class="nav-link"><i class="fas fa-cog"></i> الإعدادات</a></li>
                         <li><a href="#site" class="nav-link"><i class="fas fa-globe"></i> إعدادات الموقع</a></li>
                     </ul>
@@ -65,6 +76,35 @@
                         <div id="completed" class="projects-list">
                             <!-- Projects will be loaded here -->
                         </div>
+                    </div>
+                </section>
+
+                <!-- About Section -->
+                <section id="about" class="section">
+                    <div class="section-header">
+                        <h2>من نحن</h2>
+                    </div>
+                    <div class="about-form">
+                        <div class="form-group">
+                            <label for="aboutTitle">عنوان القسم</label>
+                            <input type="text" id="aboutTitle" value="من نحن">
+                        </div>
+                        <div class="form-group">
+                            <label for="aboutDescription">الوصف الأول</label>
+                            <textarea id="aboutDescription1" rows="4">Volt Pro هي مجموعة متخصصة من الصناعيين والحرفيين المحترفين في مجالات الكهرباء والمنازل الذكية. نضم نخبة من الخبراء والمتخصصين الذين يمتلكون سنوات من الخبرة في تنفيذ المشاريع الكهربائية المعقدة وأنظمة الأتمتة الذكية.</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="aboutDescription2">الوصف الثاني</label>
+                            <textarea id="aboutDescription2" rows="4">نعتمد في عملنا على معايير هندسية دقيقة وتنفيذ متقن، حيث لا نكتفي بتوصيل الأسلاك فقط، بل نصمم وننظم الأنظمة الكهربائية لتكون آمنة ومرتبة ومتطورة، مع مواكبة أحدث التقنيات التكنولوجية في العالم.</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="aboutImage">صورة القسم</label>
+                            <input type="file" id="aboutImageInput" accept="image/*">
+                            <div id="aboutImagePreview" class="image-preview">
+                                <img src="image/profile.jpeg" alt="صورة من نحن">
+                            </div>
+                        </div>
+                        <button id="saveAboutBtn" class="btn btn-primary">حفظ التغييرات</button>
                     </div>
                 </section>
 
@@ -183,13 +223,18 @@
                     </div>
                     <div class="form-group">
                         <label>الصور</label>
+                        <div class="image-upload-area" id="imageUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>اسحب الصور هنا أو انقر للاختيار</p>
+                            <input type="file" id="imageFileInput" multiple accept="image/*" style="display: none;">
+                        </div>
                         <div id="imagesContainer">
                             <div class="image-input-group">
                                 <input type="text" class="image-input" placeholder="رابط الصورة">
                                 <button type="button" class="btn btn-sm btn-danger remove-image">حذف</button>
                             </div>
                         </div>
-                        <button type="button" id="addImageBtn" class="btn btn-sm btn-secondary">إضافة صورة</button>
+                        <button type="button" id="addImageBtn" class="btn btn-sm btn-secondary">إضافة رابط صورة</button>
                     </div>
                 </form>
             </div>

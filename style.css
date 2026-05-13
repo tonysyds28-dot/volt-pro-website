@@ -1,0 +1,665 @@
+/* =============================================
+   1. الإعدادات العامة (General Setup)
+   ============================================= */
+:root {
+    --primary-color: #f5c518;    /* الأصفر الكهربائي */
+    --secondary-color: #1a1a1a;  /* الأسود الداكن */
+    --bg-light: #0d0d0d;        /* رمادي غامق للأقسام البديلة */
+    --text-white: #ffffff;
+    --text-muted: #b0b0b0;
+    --transition: all 0.3s ease;
+    --container-width: 1200px;
+    --border-radius: 10px;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background-color: var(--secondary-color);
+    color: var(--text-white);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+ul { list-style: none; }
+a { text-decoration: none; color: inherit; }
+
+/* Reveal Animation Classes */
+.reveal {
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.3s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Active Navigation Link */
+.nav-links a.active {
+    color: var(--primary-color);
+}
+
+/* Badge */
+.badge {
+    display: inline-block;
+    background: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Hero Buttons */
+.hero-btns {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Card Icon */
+.card-icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+/* Card Edge */
+.card-edge {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--primary-color);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover .card-edge {
+    transform: scaleX(1);
+}
+
+/* Social Links */
+.social-links {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: var(--secondary-color);
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.social-links a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(245, 197, 24, 0.3);
+}
+
+/* Copyright */
+.copyright {
+    text-align: center;
+    margin-top: 30px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Contact Info */
+.contact-info {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.contact-info h3 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.contact-info p {
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+/* =============================================
+   2. شريط التنقل (Navigation)
+   ============================================= */
+nav {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    background: rgba(18, 18, 18, 0.95);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    border-bottom: 1px solid #333;
+}
+
+.nav-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--text-white);
+}
+
+.logo span { color: var(--primary-color); }
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+    transition: var(--transition);
+}
+
+.btn-nav {
+    background: var(--primary-color);
+    color: var(--secondary-color) !important;
+    padding: 8px 20px;
+    border-radius: 5px;
+    font-weight: 700;
+}
+
+/* =============================================
+   3. قسم الترحيب (Hero Section)
+   ============================================= */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80');
+    background-size: cover;
+    background-position: center;
+    padding-top: 80px;
+}
+
+.hero h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: 20px;
+}
+
+.highlight { color: var(--primary-color); }
+
+.hero p {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 15px 35px;
+    border-radius: 5px;
+    font-weight: 700;
+    display: inline-block;
+    margin-left: 15px;
+    transition: var(--transition);
+}
+
+.btn-secondary {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 13px 35px;
+    border-radius: 5px;
+    font-weight: 700;
+    display: inline-block;
+    transition: var(--transition);
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(245, 197, 24, 0.3);
+}
+
+/* =============================================
+   4. قسم الخدمات (Services)
+   ============================================= */
+.services {
+    padding: 100px 0;
+    background: var(--bg-light);
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.section-title h2 { font-size: 2.5rem; }
+
+.line {
+    width: 80px;
+    height: 4px;
+    background: var(--primary-color);
+    margin: 10px auto;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.service-card {
+    background: var(--secondary-color);
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #333;
+    transition: var(--transition);
+    position: relative;
+}
+
+.service-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-5px);
+}
+
+.service-card .icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+/* =============================================
+   5. قسم من أنا (About)
+   ============================================= */
+.about {
+    padding: 100px 0;
+    background: var(--secondary-color);
+}
+
+.about-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 50px;
+    max-width: 1000px;
+    margin: 0 auto;
+    flex-direction: row-reverse;
+}
+
+.about-image {
+    flex: 0 0 300px;
+    order: 2;
+}
+
+.about-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 3px solid var(--primary-color);
+}
+
+.about-text {
+    flex: 1;
+    text-align: right;
+    order: 1;
+}
+
+.about-content p {
+    margin-bottom: 20px;
+    line-height: 1.8;
+    text-align: right;
+}
+
+.about-content h3 {
+    color: var(--primary-color);
+    margin: 30px 0 20px;
+    text-align: center;
+}
+
+.about-content ul {
+    list-style: none;
+    padding: 0;
+    text-align: right;
+}
+
+.about-content li {
+    margin-bottom: 15px;
+    padding-right: 20px;
+    position: relative;
+}
+
+.about-content li:before {
+    content: "•";
+    color: var(--primary-color);
+    position: absolute;
+    right: 0;
+}
+
+/* =============================================
+   6. قسم الأعمال (Portfolio)
+   ============================================= */
+.portfolio {
+    padding: 100px 0;
+    background: var(--secondary-color);
+}
+
+.portfolio-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.portfolio-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.images {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0;
+}
+
+.images img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.images img:hover {
+    transform: scale(1.05);
+}
+
+.project-header {
+    background: var(--primary-color);
+    padding: 15px 20px;
+    text-align: center;
+}
+
+.project-header h3 {
+    color: var(--secondary-color);
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.project-description {
+    padding: 20px;
+    background: rgba(245, 197, 24, 0.1);
+    border-top: 2px solid var(--primary-color);
+}
+
+.project-description p {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--text-white);
+}
+
+/* Image Gallery Modal */
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    cursor: pointer;
+}
+
+.image-modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-image {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    animation: zoomIn 0.2s ease;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+    color: var(--primary-color);
+}
+
+/* =============================================
+   7. WhatsApp Floating Button
+   ============================================= */
+.whatsapp-float {
+    position: fixed;
+    left: 30px;
+    bottom: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #25D366;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+    z-index: 1000;
+    animation: blink 3s infinite;
+    transition: all 0.2s ease;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
+}
+
+@keyframes blink {
+    0%, 60%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    30%, 90% {
+        opacity: 0.9;
+        transform: scale(0.98);
+    }
+}
+
+/* =============================================
+   8. Mobile Menu Styles
+   ============================================= */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.bar {
+    width: 25px;
+    height: 3px;
+    background: var(--text-white);
+    margin: 3px 0;
+    transition: var(--transition);
+}
+
+.menu-toggle.active .bar:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.menu-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active .bar:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+/* =============================================
+   9. Responsive Design
+   ============================================= */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
+    
+    .nav-links {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 80px;
+        width: 100%;
+        background: rgba(26, 26, 26, 0.98);
+        flex-direction: column;
+        gap: 0;
+        padding: 20px 0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .nav-links.active {
+        display: flex;
+        transform: translateX(0);
+    }
+    
+    .nav-links li {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .nav-links a {
+        display: block;
+        padding: 15px 20px;
+        border-bottom: 1px solid #333;
+    }
+    
+    .nav-links a:hover {
+        background: var(--primary-color);
+        color: var(--secondary-color);
+    }
+    
+    .btn-nav {
+        margin: 10px 20px;
+        text-align: center;
+    }
+    
+    .hero h1 { font-size: 2rem; }
+    .hero-btns { display: flex; flex-direction: column; gap: 15px; }
+    .btn-primary { margin-left: 0; }
+    
+    .about-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .about-image {
+        flex: 0 0 auto;
+        margin-bottom: 30px;
+        order: 1;
+    }
+    
+    .about-text {
+        text-align: center;
+        order: 2;
+    }
+    
+    .about-text p,
+    .about-text ul {
+        text-align: center;
+    }
+    
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .portfolio-item .images {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+    
+    .portfolio-item .images img {
+        height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .hero h1 {
+        font-size: 1.5rem;
+    }
+    
+    .service-card {
+        padding: 30px 20px;
+    }
+    
+    .about-image img {
+        width: 200px;
+    }
+    
+    .whatsapp-float {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        left: 20px;
+        bottom: 20px;
+    }
+}

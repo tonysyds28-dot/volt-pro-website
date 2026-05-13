@@ -85,6 +85,7 @@ function throttledScrollHandler() {
 const modal = document.getElementById('imageModal');
 const modalImg = document.getElementById('modalImage');
 const modalClose = document.querySelector('.modal-close');
+let modalOpenTime = 0;
 
 // Add click event to all portfolio images
 document.addEventListener('DOMContentLoaded', function() {
@@ -99,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close modal when clicking on close button or outside image
     modalClose.addEventListener('click', closeModal);
     modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
+        if (e.target === modal && Date.now() - modalOpenTime > 300) {
             closeModal();
         }
     });
@@ -132,6 +133,7 @@ function openModal(src, alt) {
     modalImg.src = src;
     modalImg.alt = alt;
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    modalOpenTime = Date.now();
 }
 
 function closeModal() {

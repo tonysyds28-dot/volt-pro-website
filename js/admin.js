@@ -4,14 +4,95 @@ class VoltProAdmin {
         this.projectsData = null;
         this.currentEditingProject = null;
         this.autoSaveEnabled = true;
+        this.autoSaveInterval = null;
+        this.isAuthenticated = false;
+        this.backupHistory = [];
+        this.maxBackups = 10;
         this.init();
     }
 
     async init() {
+        // Check authentication first
+        if (!this.checkAuthentication()) {
+            this.showLoginForm();
+            return;
+        }
+
         await this.loadProjectsData();
         this.setupEventListeners();
         this.renderProjects();
         this.loadSiteSettings();
+        this.loadAboutSection();
+        this.setupAutoSave();
+        this.createBackup();
+    }
+
+    // Check if user is authenticated
+    checkAuthentication() {
+        const token = localStorage.getItem('voltpro_auth_token');
+        const sessionTime = localStorage.getItem('voltpro_session_time');
+        
+        // Check if session is still valid (24 hours)
+        if (token && sessionTime) {
+            const elapsed = Date.now() - parseInt(sessionTime);
+            if (elapsed < 24 * 60 * 60 * 1000) {
+                this.isAuthenticated = true;
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    // Show login form
+    showLoginForm() {
+        document.body.innerHTML = `
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-logo">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h2>لوحة التحكم - تسجيل الدخول</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="password">كلمة المرور</label>
+                            <input type="password" id="password" required placeholder="أدخل كلمة المرور">
+                        </div>
+                        <button type="submit" class="btn btn-primary">دخول</button>
+                    </form>
+                    <div id="loginMessage"></div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.handleLogin(document.getElementById('password').value);
+        });
+    }
+
+    // Handle login
+    handleLogin(password) {
+        // Simple password check (use secure method in production)
+        const correctPassword = 'Volt@2024';
+        const messageEl = document.getElementById('loginMessage');
+        
+        if (password === correctPassword) {
+            localStorage.setItem('voltpro_auth_token', 'token_' + Date.now());
+            localStorage.setItem('voltpro_session_time', Date.now().toString());
+            this.isAuthenticated = true;
+            location.reload();
+        } else {
+            messageEl.textContent = 'كلمة المرور غير صحيحة';
+            messageEl.className = 'error-message';
+        }
+    }
+
+    // Logout
+    logout() {
+        localStorage.removeItem('voltpro_auth_token');
+        localStorage.removeItem('voltpro_session_time');
+        location.reload();
     }
 
     // Load projects data from Decap CMS structure
@@ -479,10 +560,15 @@ class VoltProAdmin {
         // Buttons
         document.getElementById('saveBtn').addEventListener('click', () => this.saveAllChanges());
         document.getElementById('exportBtn').addEventListener('click', () => this.exportYAML());
+        document.getElementById('backupBtn').addEventListener('click', () => this.createBackup());
+        document.getElementById('restoreBtn').addEventListener('click', () => this.restoreBackup());
         document.getElementById('addProjectBtn').addEventListener('click', () => this.openProjectModal());
         document.getElementById('saveProjectBtn').addEventListener('click', () => this.saveProject());
         document.getElementById('cancelBtn').addEventListener('click', () => this.closeProjectModal());
         document.getElementById('addImageBtn').addEventListener('click', () => this.addImageInput());
+
+        // Image upload and drag-drop
+        this.setupImageUpload();
 
         // Modal
         document.querySelector('.close-btn').addEventListener('click', () => this.closeProjectModal());
@@ -495,7 +581,18 @@ class VoltProAdmin {
         // Auto-save
         document.getElementById('autoSave').addEventListener('change', (e) => {
             this.autoSaveEnabled = e.target.checked;
+            if (e.target.checked) {
+                this.setupAutoSave();
+            } else {
+                this.stopAutoSave();
+            }
         });
+
+        // Logout button
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => this.logout());
+        }
 
         // Site settings
         document.querySelectorAll('#site input').forEach(input => {
@@ -505,6 +602,238 @@ class VoltProAdmin {
                 }
             });
         });
+
+        // About section save
+        const saveAboutBtn = document.getElementById('saveAboutBtn');
+        if (saveAboutBtn) {
+            saveAboutBtn.addEventListener('click', () => this.saveAboutSection());
+        }
+
+        // About image upload
+        const aboutImageInput = document.getElementById('aboutImageInput');
+        if (aboutImageInput) {
+            aboutImageInput.addEventListener('change', (e) => this.handleAboutImageUpload(e));
+        }
+    }
+
+    // Setup image upload and drag-drop
+    setupImageUpload() {
+        const uploadArea = document.getElementById('imageUploadArea');
+        const fileInput = document.getElementById('imageFileInput');
+
+        if (!uploadArea || !fileInput) return;
+
+        // Click to upload
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            this.handleImageUpload(e.target.files);
+        });
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            this.handleImageUpload(e.dataTransfer.files);
+        });
+    }
+
+    // Handle image upload
+    async handleImageUpload(files) {
+        if (!files || files.length === 0) return;
+
+        for (let file of files) {
+            if (file.type.startsWith('image/')) {
+                try {
+                    const base64 = await this.fileToBase64(file);
+                    this.addImageInput(base64);
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                    this.showMessage('خطأ في رفع الصورة', 'error');
+                }
+            }
+        }
+    }
+
+    // Convert file to base64
+    fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    // Handle about image upload
+    async handleAboutImageUpload(e) {
+        const file = e.target.files[0];
+        if (!file || !file.type.startsWith('image/')) return;
+
+        try {
+            const base64 = await this.fileToBase64(file);
+            const preview = document.getElementById('aboutImagePreview');
+            preview.innerHTML = `<img src="${base64}" alt="صورة من نحن">`;
+            this.showMessage('تم رفع الصورة بنجاح', 'success');
+        } catch (error) {
+            console.error('Error uploading about image:', error);
+            this.showMessage('خطأ في رفع الصورة', 'error');
+        }
+    }
+
+    // Save about section
+    saveAboutSection() {
+        const aboutData = {
+            title: document.getElementById('aboutTitle').value,
+            description1: document.getElementById('aboutDescription1').value,
+            description2: document.getElementById('aboutDescription2').value,
+            image: document.querySelector('#aboutImagePreview img')?.src || 'image/profile.jpeg'
+        };
+
+        localStorage.setItem('voltpro_about', JSON.stringify(aboutData));
+        this.showMessage('تم حفظ قسم من نحن بنجاح', 'success');
+    }
+
+    // Load about section
+    loadAboutSection() {
+        const savedAbout = localStorage.getItem('voltpro_about');
+        if (savedAbout) {
+            const aboutData = JSON.parse(savedAbout);
+            document.getElementById('aboutTitle').value = aboutData.title || 'من نحن';
+            document.getElementById('aboutDescription1').value = aboutData.description1 || '';
+            document.getElementById('aboutDescription2').value = aboutData.description2 || '';
+            if (aboutData.image) {
+                document.getElementById('aboutImagePreview').innerHTML = `<img src="${aboutData.image}" alt="صورة من نحن">`;
+            }
+        }
+    }
+
+    // Create backup
+    createBackup() {
+        const backupData = {
+            projects: this.projectsData,
+            siteConfig: this.getSiteConfig(),
+            about: this.getAboutData(),
+            timestamp: new Date().toISOString()
+        };
+
+        const backupKey = `voltpro_backup_${Date.now()}`;
+        localStorage.setItem(backupKey, JSON.stringify(backupData));
+
+        // Keep only last 5 backups
+        const backups = this.getBackupKeys();
+        if (backups.length > 5) {
+            backups.slice(5).forEach(key => localStorage.removeItem(key));
+        }
+
+        this.showMessage('تم إنشاء نسخة احتياطية بنجاح', 'success');
+    }
+
+    // Restore backup
+    restoreBackup() {
+        const backups = this.getBackupKeys();
+        if (backups.length === 0) {
+            this.showMessage('لا توجد نسخ احتياطية', 'error');
+            return;
+        }
+
+        // Get latest backup
+        const latestBackup = backups[0];
+        const backupData = JSON.parse(localStorage.getItem(latestBackup));
+
+        if (confirm('هل تريد استرجاع النسخة الاحتياطية من ' + new Date(backupData.timestamp).toLocaleString('ar') + '؟')) {
+            // Restore projects
+            this.projectsData = backupData.projects;
+            this.renderProjects();
+
+            // Restore site config
+            if (backupData.siteConfig) {
+                this.restoreSiteConfig(backupData.siteConfig);
+            }
+
+            // Restore about section
+            if (backupData.about) {
+                this.restoreAboutData(backupData.about);
+            }
+
+            this.showMessage('تم استرجاع النسخة الاحتياطية بنجاح', 'success');
+        }
+    }
+
+    // Get backup keys
+    getBackupKeys() {
+        const keys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('voltpro_backup_')) {
+                keys.push(key);
+            }
+        }
+        return keys.sort((a, b) => {
+            const timeA = parseInt(a.split('_')[2]);
+            const timeB = parseInt(b.split('_')[2]);
+            return timeB - timeA;
+        });
+    }
+
+    // Get site config
+    getSiteConfig() {
+        return {
+            companyName: document.getElementById('companyName')?.value,
+            companyTagline: document.getElementById('companyTagline')?.value,
+            phone: document.getElementById('phone')?.value,
+            whatsapp: document.getElementById('whatsapp')?.value,
+            email: document.getElementById('email')?.value,
+            instagram: document.getElementById('instagram')?.value,
+            linkedin: document.getElementById('linkedin')?.value,
+            facebook: document.getElementById('facebook')?.value,
+            twitter: document.getElementById('twitter')?.value
+        };
+    }
+
+    // Get about data
+    getAboutData() {
+        return {
+            title: document.getElementById('aboutTitle')?.value,
+            description1: document.getElementById('aboutDescription1')?.value,
+            description2: document.getElementById('aboutDescription2')?.value,
+            image: document.querySelector('#aboutImagePreview img')?.src
+        };
+    }
+
+    // Restore site config
+    restoreSiteConfig(config) {
+        if (config.companyName) document.getElementById('companyName').value = config.companyName;
+        if (config.companyTagline) document.getElementById('companyTagline').value = config.companyTagline;
+        if (config.phone) document.getElementById('phone').value = config.phone;
+        if (config.whatsapp) document.getElementById('whatsapp').value = config.whatsapp;
+        if (config.email) document.getElementById('email').value = config.email;
+        if (config.instagram) document.getElementById('instagram').value = config.instagram;
+        if (config.linkedin) document.getElementById('linkedin').value = config.linkedin;
+        if (config.facebook) document.getElementById('facebook').value = config.facebook;
+        if (config.twitter) document.getElementById('twitter').value = config.twitter;
+    }
+
+    // Restore about data
+    restoreAboutData(data) {
+        if (data.title) document.getElementById('aboutTitle').value = data.title;
+        if (data.description1) document.getElementById('aboutDescription1').value = data.description1;
+        if (data.description2) document.getElementById('aboutDescription2').value = data.description2;
+        if (data.image) {
+            document.getElementById('aboutImagePreview').innerHTML = `<img src="${data.image}" alt="صورة من نحن">`;
+        }
     }
 
     // Switch between sections
@@ -862,7 +1191,7 @@ class VoltProAdmin {
 
     // Save site settings
     async saveSiteSettings() {
-        if (!this.projectsData) return;
+        if (!this.projectsData) return false;
 
         this.projectsData.site_config = {
             company_name: document.getElementById('companyName').value,
@@ -892,6 +1221,7 @@ class VoltProAdmin {
         await this.saveSettings();
         
         this.showMessage('تم حفظ إعدادات الموقع بنجاح', 'success');
+        return true;
     }
 
     // View project details
@@ -1029,6 +1359,101 @@ class VoltProAdmin {
         });
     }
 
+    // Setup auto-save
+    setupAutoSave() {
+        if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+        }
+        
+        this.autoSaveInterval = setInterval(() => {
+            if (this.autoSaveEnabled && this.projectsData) {
+                this.saveAllChanges(true);
+            }
+        }, 5 * 60 * 1000); // Save every 5 minutes
+    }
+
+    // Stop auto-save
+    stopAutoSave() {
+        if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+            this.autoSaveInterval = null;
+        }
+    }
+
+    // Create backup
+    createBackup() {
+        if (!this.projectsData) return;
+
+        const backup = {
+            data: JSON.parse(JSON.stringify(this.projectsData)),
+            timestamp: Date.now(),
+            date: new Date().toLocaleString('ar-SA')
+        };
+
+        this.backupHistory.push(backup);
+
+        // Keep only last N backups
+        if (this.backupHistory.length > this.maxBackups) {
+            this.backupHistory.shift();
+        }
+
+        localStorage.setItem('voltpro_backups', JSON.stringify(this.backupHistory));
+    }
+
+    // Restore backup
+    restoreBackup(index) {
+        if (index < 0 || index >= this.backupHistory.length) {
+            this.showMessage('نسخة احتياطية غير صحيحة', 'error');
+            return;
+        }
+
+        const backup = this.backupHistory[index];
+        this.projectsData = JSON.parse(JSON.stringify(backup.data));
+        
+        // Re-render
+        this.renderProjects();
+        this.loadSiteSettings();
+        
+        this.showMessage(`تم استعادة النسخة من ${backup.date}`, 'success');
+    }
+
+    // Save all changes
+    async saveAllChanges(isAutoSave = false) {
+        try {
+            // Update site settings first
+            const configUpdated = await this.saveSiteSettings();
+            
+            // Save projects
+            const wipProjects = this.projectsData.projects.under_construction;
+            const doneProjects = this.projectsData.projects.completed;
+            
+            localStorage.setItem('voltpro_settings', JSON.stringify(this.projectsData.site_config));
+            localStorage.setItem('voltpro_under_construction_projects', JSON.stringify(wipProjects));
+            localStorage.setItem('voltpro_completed_projects', JSON.stringify(doneProjects));
+
+            // Create backup after saving
+            this.createBackup();
+
+            if (!isAutoSave) {
+                this.showMessage('تم حفظ جميع التغييرات بنجاح', 'success');
+            }
+        } catch (error) {
+            console.error('Error saving changes:', error);
+            this.showMessage('خطأ في حفظ التغييرات', 'error');
+        }
+    }
+
+    // Get category label
+    getCategoryLabel(category) {
+        const labels = {
+            'industrial': 'صناعي',
+            'sports': 'رياضي',
+            'commercial': 'تجاري',
+            'residential': 'سكني'
+        };
+        return labels[category] || category;
+    }
+
     // Show message
     showMessage(message, type = 'info') {
         const messageDiv = document.createElement('div');
@@ -1036,7 +1461,9 @@ class VoltProAdmin {
         messageDiv.textContent = message;
         
         const container = document.querySelector('.content-area');
-        container.insertBefore(messageDiv, container.firstChild);
+        if (container) {
+            container.insertBefore(messageDiv, container.firstChild);
+        }
         
         setTimeout(() => {
             messageDiv.remove();
