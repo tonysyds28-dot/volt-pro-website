@@ -658,12 +658,21 @@ class VoltProAdmin {
         for (let file of files) {
             if (file.type.startsWith('image/')) {
                 try {
+                    // Check file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        this.showMessage('حجم الصورة كبير جداً. الحد الأقصى 5MB', 'error');
+                        continue;
+                    }
+
                     const base64 = await this.fileToBase64(file);
                     this.addImageInput(base64);
+                    this.showMessage('تم رفع الصورة بنجاح', 'success');
                 } catch (error) {
                     console.error('Error uploading image:', error);
-                    this.showMessage('خطأ في رفع الصورة', 'error');
+                    this.showMessage('خطأ في رفع الصورة: ' + error.message, 'error');
                 }
+            } else {
+                this.showMessage('الملف المختار ليس صورة', 'error');
             }
         }
     }
@@ -723,23 +732,35 @@ class VoltProAdmin {
 
     // Create backup
     createBackup() {
-        const backupData = {
-            projects: this.projectsData,
-            siteConfig: this.getSiteConfig(),
-            about: this.getAboutData(),
-            timestamp: new Date().toISOString()
-        };
+        try {
+            const backupData = {
+                projects: this.projectsData,
+                siteConfig: this.getSiteConfig(),
+                about: this.getAboutData(),
+                timestamp: new Date().toISOString()
+            };
 
-        const backupKey = `voltpro_backup_${Date.now()}`;
-        localStorage.setItem(backupKey, JSON.stringify(backupData));
+            // Check if data exists
+            if (!backupData.projects) {
+                this.showMessage('لا توجد بيانات مشاريع للنسخ الاحتياطي', 'error');
+                return;
+            }
 
-        // Keep only last 5 backups
-        const backups = this.getBackupKeys();
-        if (backups.length > 5) {
-            backups.slice(5).forEach(key => localStorage.removeItem(key));
+            const backupKey = `voltpro_backup_${Date.now()}`;
+            localStorage.setItem(backupKey, JSON.stringify(backupData));
+
+            // Keep only last 5 backups
+            const backups = this.getBackupKeys();
+            if (backups.length > 5) {
+                backups.slice(5).forEach(key => localStorage.removeItem(key));
+            }
+
+            this.showMessage('تم إنشاء نسخة احتياطية بنجاح', 'success');
+            this.renderBackupList();
+        } catch (error) {
+            console.error('Error creating backup:', error);
+            this.showMessage('خطأ في إنشاء النسخة الاحتياطية: ' + error.message, 'error');
         }
-
-        this.showMessage('تم إنشاء نسخة احتياطية بنجاح', 'success');
     }
 
     // Restore backup

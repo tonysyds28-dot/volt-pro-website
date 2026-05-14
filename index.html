@@ -358,11 +358,15 @@
         // Load location from site settings
         const savedSettings = localStorage.getItem('voltpro_settings');
         if (savedSettings) {
-            const settings = JSON.parse(savedSettings);
-            // Update hero badge if it contains location
-            const heroBadge = document.querySelector('.hero .badge');
-            if (heroBadge && settings.location) {
-                heroBadge.textContent = `متوفر الآن في ${settings.location}`;
+            try {
+                const settings = JSON.parse(savedSettings);
+                // Update hero badge if it contains location
+                const heroBadge = document.querySelector('.hero .badge');
+                if (heroBadge && settings && settings.location) {
+                    heroBadge.textContent = `متوفر الآن في ${settings.location}`;
+                }
+            } catch (e) {
+                console.error('Error parsing settings:', e);
             }
         }
     }
