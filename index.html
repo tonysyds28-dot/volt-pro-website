@@ -323,5 +323,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
 <script src="js/yaml-loader.js"></script>
 <script src="script.js"></script>
+
+<!-- Load dynamic content from admin panel -->
+<script>
+    // Load about section data from localStorage
+    function loadAboutSection() {
+        const savedAbout = localStorage.getItem('voltpro_about');
+        if (savedAbout) {
+            const aboutData = JSON.parse(savedAbout);
+
+            // Update title
+            const aboutTitle = document.querySelector('#about .section-title h2');
+            if (aboutTitle && aboutData.title) {
+                aboutTitle.textContent = aboutData.title;
+            }
+
+            // Update descriptions
+            const aboutText = document.querySelector('.about-text');
+            if (aboutText) {
+                const paragraphs = aboutText.querySelectorAll('p');
+                if (paragraphs.length >= 2) {
+                    if (aboutData.description1) paragraphs[0].textContent = aboutData.description1;
+                    if (aboutData.description2) paragraphs[1].textContent = aboutData.description2;
+                }
+            }
+
+            // Update image
+            const aboutImage = document.querySelector('.about-image img');
+            if (aboutImage && aboutData.image) {
+                aboutImage.src = aboutData.image;
+            }
+        }
+
+        // Load location from site settings
+        const savedSettings = localStorage.getItem('voltpro_settings');
+        if (savedSettings) {
+            const settings = JSON.parse(savedSettings);
+            // Update hero badge if it contains location
+            const heroBadge = document.querySelector('.hero .badge');
+            if (heroBadge && settings.location) {
+                heroBadge.textContent = `متوفر الآن في ${settings.location}`;
+            }
+        }
+    }
+
+    // Load on page load
+    document.addEventListener('DOMContentLoaded', loadAboutSection);
+</script>
 </body>
 </html>

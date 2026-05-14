@@ -23,6 +23,7 @@ class VoltProAdmin {
         this.renderProjects();
         this.loadSiteSettings();
         this.loadAboutSection();
+        this.renderBackupList();
         this.setupAutoSave();
         this.createBackup();
     }
@@ -742,16 +743,16 @@ class VoltProAdmin {
     }
 
     // Restore backup
-    restoreBackup() {
+    restoreBackup(backupKey = null) {
         const backups = this.getBackupKeys();
         if (backups.length === 0) {
             this.showMessage('لا توجد نسخ احتياطية', 'error');
             return;
         }
 
-        // Get latest backup
-        const latestBackup = backups[0];
-        const backupData = JSON.parse(localStorage.getItem(latestBackup));
+        // Get specific backup or latest
+        const backupKeyToRestore = backupKey || backups[0];
+        const backupData = JSON.parse(localStorage.getItem(backupKeyToRestore));
 
         if (confirm('هل تريد استرجاع النسخة الاحتياطية من ' + new Date(backupData.timestamp).toLocaleString('ar') + '؟')) {
             // Restore projects
@@ -769,7 +770,59 @@ class VoltProAdmin {
             }
 
             this.showMessage('تم استرجاع النسخة الاحتياطية بنجاح', 'success');
+            this.renderBackupList();
         }
+    }
+
+    // Delete backup
+    deleteBackup(backupKey) {
+        if (confirm('هل تريد حذف هذه النسخة الاحتياطية؟')) {
+            localStorage.removeItem(backupKey);
+            this.showMessage('تم حذف النسخة الاحتياطية', 'success');
+            this.renderBackupList();
+        }
+    }
+
+    // Render backup list
+    renderBackupList() {
+        const backupList = document.getElementById('backupList');
+        if (!backupList) return;
+
+        const backups = this.getBackupKeys();
+
+        if (backups.length === 0) {
+            backupList.innerHTML = '<div class="no-backups">لا توجد نسخ احتياطية</div>';
+            return;
+        }
+
+        backupList.innerHTML = backups.map(key => {
+            const backupData = JSON.parse(localStorage.getItem(key));
+            const date = new Date(backupData.timestamp);
+            const dateStr = date.toLocaleDateString('ar-SA', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            const timeStr = date.toLocaleTimeString('ar-SA');
+
+            return `
+                <div class="backup-item">
+                    <div class="backup-info">
+                        <div class="backup-date">${dateStr}</div>
+                        <div class="backup-time">${timeStr}</div>
+                    </div>
+                    <div class="backup-actions">
+                        <button class="btn btn-success btn-sm" onclick="admin.restoreBackup('${key}')">
+                            <i class="fas fa-undo"></i> استرجاع
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="admin.deleteBackup('${key}')">
+                            <i class="fas fa-trash"></i> حذف
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     // Get backup keys
@@ -796,6 +849,7 @@ class VoltProAdmin {
             phone: document.getElementById('phone')?.value,
             whatsapp: document.getElementById('whatsapp')?.value,
             email: document.getElementById('email')?.value,
+            location: document.getElementById('location')?.value,
             instagram: document.getElementById('instagram')?.value,
             linkedin: document.getElementById('linkedin')?.value,
             facebook: document.getElementById('facebook')?.value,
@@ -820,6 +874,7 @@ class VoltProAdmin {
         if (config.phone) document.getElementById('phone').value = config.phone;
         if (config.whatsapp) document.getElementById('whatsapp').value = config.whatsapp;
         if (config.email) document.getElementById('email').value = config.email;
+        if (config.location) document.getElementById('location').value = config.location;
         if (config.instagram) document.getElementById('instagram').value = config.instagram;
         if (config.linkedin) document.getElementById('linkedin').value = config.linkedin;
         if (config.facebook) document.getElementById('facebook').value = config.facebook;
@@ -869,28 +924,56 @@ class VoltProAdmin {
         // Render under construction projects
         const underConstructionContainer = document.getElementById('under_construction');
         underConstructionContainer.innerHTML = '';
-        
-        this.projectsData.projects.under_construction.forEach(project => {
-            underConstructionContainer.appendChild(this.createProjectCard(project, 'under_construction'));
+
+        this.projectsData.projects.under_construction.forEach((project, index) => {
+            underConstructionContainer.appendChild(this.createProjectCard(project, 'under_construction', index));
         });
 
         // Render completed projects
         const completedContainer = document.getElementById('completed');
         completedContainer.innerHTML = '';
-        
-        this.projectsData.projects.completed.forEach(project => {
-            completedContainer.appendChild(this.createProjectCard(project, 'completed'));
+
+        this.projectsData.projects.completed.forEach((project, index) => {
+            completedContainer.appendChild(this.createProjectCard(project, 'completed', index));
         });
     }
 
+    // Move project up or down
+    moveProject(projectId, status, direction) {
+        const array = status === 'under_construction' ? this.projectsData.projects.under_construction : this.projectsData.projects.completed;
+        const currentIndex = array.findIndex(p => p.id === projectId);
+
+        if (currentIndex === -1) return;
+
+        const newIndex = currentIndex + direction;
+
+        // Check bounds
+        if (newIndex < 0 || newIndex >= array.length) {
+            return;
+        }
+
+        // Swap projects
+        [array[currentIndex], array[newIndex]] = [array[newIndex], array[currentIndex]];
+
+        this.renderProjects();
+        this.showMessage('تم تغيير ترتيب المشروع بنجاح', 'success');
+
+        if (this.autoSaveEnabled) {
+            this.saveAllChanges();
+        }
+    }
+
     // Create project card
-    createProjectCard(project, status) {
+    createProjectCard(project, status, index) {
         const card = document.createElement('div');
         card.className = 'project-card';
+        card.dataset.projectId = project.id;
+        card.dataset.status = status;
+
         card.innerHTML = `
             <div class="project-header">
                 <div>
-                    <div class="project-title">${project.title}</div>
+                    <div class="project-title">${project.title} <span class="project-number">#${index + 1}</span></div>
                     <div class="project-meta">
                         <span><i class="fas fa-calendar"></i> ${project.year || 'N/A'}</span>
                         <span><i class="fas fa-user"></i> ${project.client || 'N/A'}</span>
@@ -911,6 +994,14 @@ class VoltProAdmin {
                 </button>
                 <button class="btn btn-danger btn-sm" onclick="admin.deleteProject('${project.id}', '${status}')">
                     <i class="fas fa-trash"></i> حذف
+                </button>
+            </div>
+            <div class="project-order-controls">
+                <button class="btn btn-secondary btn-sm" onclick="admin.moveProject('${project.id}', '${status}', -1)">
+                    <i class="fas fa-arrow-up"></i> لأعلى
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="admin.moveProject('${project.id}', '${status}', 1)">
+                    <i class="fas fa-arrow-down"></i> لأسفل
                 </button>
             </div>
         `;
@@ -978,17 +1069,28 @@ class VoltProAdmin {
     // Add image input
     addImageInput(value = '') {
         const imagesContainer = document.getElementById('imagesContainer');
+        if (!imagesContainer) return;
+
         const imageGroup = document.createElement('div');
         imageGroup.className = 'image-input-group';
-        imageGroup.innerHTML = `
-            <input type="text" class="image-input" placeholder="رابط الصورة" value="${value}">
-            <button type="button" class="btn btn-sm btn-danger remove-image">حذف</button>
-        `;
-        
-        imageGroup.querySelector('.remove-image').addEventListener('click', () => {
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'image-input';
+        input.placeholder = 'رابط الصورة';
+        input.value = value;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'btn btn-sm btn-danger remove-image';
+        removeBtn.textContent = 'حذف';
+
+        removeBtn.addEventListener('click', () => {
             imageGroup.remove();
         });
-        
+
+        imageGroup.appendChild(input);
+        imageGroup.appendChild(removeBtn);
         imagesContainer.appendChild(imageGroup);
     }
 

@@ -134,12 +134,28 @@ function openModal(src, alt) {
     modalImg.alt = alt;
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
     modalOpenTime = Date.now();
+
+    // Push state to history to handle back button
+    history.pushState({ modalOpen: true }, '', '#modal');
 }
 
 function closeModal() {
     modal.classList.remove('active');
     document.body.style.overflow = 'auto'; // Restore scrolling
+
+    // Go back in history if modal was opened
+    if (history.state && history.state.modalOpen) {
+        history.back();
+    }
 }
+
+// Handle browser back button
+window.addEventListener('popstate', function(e) {
+    if (modal.classList.contains('active')) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+});
 
 // 7. Image loading optimization
 function optimizeImageLoading() {

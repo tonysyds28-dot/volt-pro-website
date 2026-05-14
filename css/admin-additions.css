@@ -316,3 +316,94 @@
     color: #ffffff;
     cursor: pointer;
 }
+
+/* Backup Section */
+.backup-section {
+    margin-top: 2rem;
+    padding: 2rem;
+    background: rgba(26, 26, 26, 0.5);
+    border-radius: 10px;
+    border: 1px solid #333333;
+}
+
+.backup-section h3 {
+    color: #f5c518;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.backup-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.backup-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(26, 26, 26, 0.8);
+    border: 1px solid #333333;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.backup-item:hover {
+    border-color: #f5c518;
+    background: rgba(245, 197, 24, 0.05);
+}
+
+.backup-info {
+    flex: 1;
+}
+
+.backup-date {
+    color: #ffffff;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.backup-time {
+    color: #cccccc;
+    font-size: 0.9rem;
+}
+
+.backup-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.backup-actions .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.no-backups {
+    text-align: center;
+    color: #cccccc;
+    padding: 2rem;
+}
+
+/* Project Order Controls */
+.project-order-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.project-order-controls .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.project-number {
+    display: inline-block;
+    background: #f5c518;
+    color: #1a1a1a;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-left: 0.5rem;
+}
