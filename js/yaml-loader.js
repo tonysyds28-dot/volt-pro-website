@@ -354,7 +354,7 @@ class YamlSiteLoader {
             company_tagline: 'مجموعة الصناعيين والحرفيين المتخصصين',
             contact: {
                 phone: '+966573423623',
-                whatsapp: '0573423623',
+                whatsapp: '966573423623',
                 email: 'info@voltpro.com'
             },
             social: {}
@@ -461,7 +461,7 @@ class YamlSiteLoader {
                 company_tagline: "مجموعة الصناعيين والحرفيين المتخصصين",
                 contact: {
                     phone: "+966573423623",
-                    whatsapp: "0573423623",
+                    whatsapp: "966573423623",
                     email: "info@voltpro.com"
                 },
                 social: {
