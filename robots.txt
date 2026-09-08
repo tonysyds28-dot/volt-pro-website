@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://tonysyds28-dot.github.io/volt-pro-website/sitemap.xml
