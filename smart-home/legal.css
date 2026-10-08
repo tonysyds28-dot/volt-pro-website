@@ -1,0 +1,88 @@
+/* Volt Pro Smart Home — app page + legal pages. Builds on ../css/style.css tokens. */
+body { text-align: start; }
+.sh-nav .nav-links { gap: 18px; }
+.lang-switch {
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255,255,255,.05);
+}
+.lang-switch button {
+    font: inherit;
+    font-weight: 700;
+    font-size: .85rem;
+    color: var(--text-muted);
+    background: none;
+    border: 0;
+    padding: 7px 15px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.lang-switch button[aria-pressed="true"] { background: var(--primary-color); color: #101317; }
+
+/* Only the active language is shown. Without JS both stay visible. */
+html.js[lang="ar"] [data-lang="en"],
+html.js[lang="en"] [data-lang="ar"] { display: none; }
+
+.sh-main { padding: 118px 0 70px; }
+.sh-header { text-align: center; margin-bottom: 38px; }
+.sh-logo {
+    width: 104px;
+    height: 104px;
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+}
+.sh-header h1 { font-size: clamp(1.7rem, 4.5vw, 2.6rem); line-height: 1.25; letter-spacing: -.5px; }
+.sh-header h1 span { color: var(--primary-color); }
+.sh-header p { color: var(--text-muted); margin-top: 8px; }
+
+.sh-card {
+    max-width: 860px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(22px, 4vw, 44px);
+    box-shadow: var(--shadow);
+}
+.sh-card h2 {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    margin: 30px 0 10px;
+    line-height: 1.4;
+}
+.sh-card h2:first-child { margin-top: 0; }
+.sh-card p, .sh-card li { color: #d9e0e6; font-size: .98rem; }
+.sh-card p + p { margin-top: 10px; }
+.sh-card ul { list-style: disc; padding-inline-start: 22px; margin-top: 8px; }
+.sh-card li + li { margin-top: 6px; }
+.sh-card a { color: var(--primary-color); text-decoration: underline; text-underline-offset: 3px; }
+.sh-note {
+    background: var(--primary-soft);
+    border: 1px solid rgba(245,197,24,.3);
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-top: 14px;
+}
+
+.sh-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-top: 8px; }
+.sh-feature { background: var(--surface-2); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+.sh-feature i { color: var(--primary-color); font-size: 1.3rem; margin-bottom: 8px; }
+.sh-feature h3 { font-size: 1rem; margin-bottom: 4px; }
+.sh-feature p { color: var(--text-muted); font-size: .9rem; }
+.sh-links { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 30px; }
+.sh-links a { text-decoration: none; }
+.sh-links .btn-primary { color: #101317; }
+.sh-links .btn-secondary { color: var(--text-white); }
+
+.sh-footer { border-top: 1px solid var(--line); padding: 26px 0; text-align: center; color: var(--text-muted); font-size: .88rem; }
+.sh-footer a { color: #d9e0e6; margin: 0 8px; }
+.sh-footer a:hover { color: var(--primary-color); }
+
+@media (max-width: 768px) {
+    .sh-nav .nav-links { display: flex; position: static; flex-direction: row; background: none; padding: 0; width: auto; height: auto; }
+    .sh-nav .nav-links .sh-hide-mobile { display: none; }
+    .sh-main { padding-top: 104px; }
+}
