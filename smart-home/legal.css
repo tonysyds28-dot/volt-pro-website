@@ -1,5 +1,7 @@
 /* Volt Pro Smart Home — app page + legal pages. Builds on ../css/style.css tokens. */
 body { text-align: start; }
+/* Brand name always reads "Volt Pro", including on the RTL (Arabic) pages. */
+.sh-nav .logo { direction: ltr; }
 .sh-nav .nav-links { gap: 18px; }
 .lang-switch {
     display: inline-flex;
