@@ -28,14 +28,6 @@ class YamlSiteLoader {
                 });
             }
         });
-        
-        // Also check for changes every 2 seconds (for same-tab updates)
-        setInterval(() => {
-            this.loadProjectsData().then(() => {
-                this.renderProjects();
-                this.updateSiteInfo();
-            });
-        }, 2000);
     }
 
     // Load projects data from Decap CMS structure
@@ -458,17 +450,17 @@ class YamlSiteLoader {
             },
             site_config: {
                 company_name: "Volt Pro",
-                company_tagline: "مجموعة الصناعيين والحرفيين المتخصصين",
+                company_tagline: "كهرباء وتيار خفيف",
                 contact: {
                     phone: "+966573423623",
                     whatsapp: "966573423623",
                     email: "info@voltpro.com"
                 },
                 social: {
-                    instagram: "https://www.instagram.com/voltprogroup",
-                    linkedin: "https://www.linkedin.com/company/voltprogroup",
-                    facebook: "https://www.facebook.com/alajadhalmtqnhllmqawlat",
-                    twitter: "https://twitter.com/voltprogroup"
+                    tiktok: "https://www.tiktok.com/@tony.syed",
+                    instagram: "https://www.instagram.com/voltpro1884",
+                    youtube: "https://www.youtube.com/@VoltPro_Official",
+                    snapchat: "https://www.snapchat.com/add/tony_syed"
                 }
             }
         };
@@ -553,18 +545,11 @@ class YamlSiteLoader {
         const socialLinks = document.querySelector('.social-links');
         if (socialLinks && config.social) {
             socialLinks.innerHTML = '';
-            if (config.social.instagram) {
-                socialLinks.innerHTML += `<a href="${config.social.instagram}"><i class="fab fa-instagram"></i></a>`;
-            }
-            if (config.social.linkedin) {
-                socialLinks.innerHTML += `<a href="${config.social.linkedin}"><i class="fab fa-linkedin"></i></a>`;
-            }
-            if (config.social.facebook) {
-                socialLinks.innerHTML += `<a href="${config.social.facebook}"><i class="fab fa-facebook"></i></a>`;
-            }
-            if (config.social.twitter) {
-                socialLinks.innerHTML += `<a href="${config.social.twitter}"><i class="fab fa-twitter"></i></a>`;
-            }
+            Object.entries(config.social).forEach(([network, url]) => {
+                if (url) {
+                    socialLinks.innerHTML += `<a href="${url}" target="_blank" rel="noopener"><i class="fab fa-${network}"></i></a>`;
+                }
+            });
         }
 
         // Update meta tags
@@ -650,12 +635,8 @@ class YamlSiteLoader {
 
             // Add social links if available
             if (config.social) {
-                const sameAs = [];
-                if (config.social.instagram) sameAs.push(config.social.instagram);
-                if (config.social.linkedin) sameAs.push(config.social.linkedin);
-                if (config.social.facebook) sameAs.push(config.social.facebook);
-                if (config.social.twitter) sameAs.push(config.social.twitter);
-                
+                const sameAs = Object.values(config.social).filter(Boolean);
+
                 if (sameAs.length > 0) {
                     structuredData.sameAs = sameAs;
                 }

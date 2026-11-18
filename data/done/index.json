@@ -8,13 +8,13 @@
     "category": "sports",
     "status": "completed",
     "images": [
-      "/image/Riyadh1.jpeg",
-      "/image/Riyadh2.jpeg",
-      "/image/Riyadh3.jpeg",
-      "/image/Riyadh4.jpeg",
-      "/image/Riyadh5.jpeg",
-      "/image/Riyadh6.jpeg",
-      "/image/Riyadh7.jpeg"
+      "image/Riyadh1.jpeg",
+      "image/Riyadh2.jpeg",
+      "image/Riyadh3.jpeg",
+      "image/Riyadh4.jpeg",
+      "image/Riyadh5.jpeg",
+      "image/Riyadh6.jpeg",
+      "image/Riyadh7.jpeg"
     ]
   },
   {
@@ -26,11 +26,11 @@
     "category": "residential",
     "status": "completed",
     "images": [
-      "/image/Rehab1.jpeg",
-      "/image/Rehab2.jpeg",
-      "/image/Rehab5.jpeg",
-      "/image/Rehab4.jpeg",
-      "/image/Rehab5.jpeg"
+      "image/Rehab1.jpeg",
+      "image/Rehab2.jpeg",
+      "image/Rehab5.jpeg",
+      "image/Rehab4.jpeg",
+      "image/Rehab5.jpeg"
     ]
   },
   {
@@ -42,11 +42,30 @@
     "category": "residential",
     "status": "completed",
     "images": [
-      "/image/sunrise1.jpeg",
-      "/image/sunrise2.jpeg",
-      "/image/sunrise3.jpeg",
-      "/image/sunrise4.jpeg",
-      "/image/sunrise5.jpeg"
+      "image/sunrise1.jpeg",
+      "image/sunrise2.jpeg",
+      "image/sunrise3.jpeg",
+      "image/sunrise4.jpeg",
+      "image/sunrise5.jpeg"
+    ]
+  },
+  {
+    "id": "girls-dorm-library-2019",
+    "title": "مكتبة سكن طالبات - تأسيس وتشطيب كهرباء من الصفر",
+    "description": "أول مشروع من الصفر عام 2019: مكتبة داخل سكن طالبات في مبنى قديم قائم. تكسير الحوائط وتمديد المواسير وتركيب العلب، ثم تقفيل المجاري قبل الدهان، وبعدها تركيب الإكسسوارات ولوحة توزيع 3 فاز بحوالي 30 دائرة، مع ترقيم كل سلك لسهولة الصيانة.",
+    "year": "2019",
+    "client": "سكن طالبات",
+    "category": "educational",
+    "status": "completed",
+    "images": [
+      "image/projects/kolia-2019/01-taksir.jpg",
+      "image/projects/kolia-2019/02-taksir-2.jpg",
+      "image/projects/kolia-2019/03-elbet-ellawha.jpg",
+      "image/projects/kolia-2019/04-taqfil.jpg",
+      "image/projects/kolia-2019/05-ba3d-eldehan.jpg",
+      "image/projects/kolia-2019/06-ba3d-eldehan-2.jpg",
+      "image/projects/kolia-2019/07-tarkib-ellawha.jpg",
+      "image/projects/kolia-2019/08-ellawha-gahza.jpg"
     ]
   }
 ]
