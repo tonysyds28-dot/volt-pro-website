@@ -9,55 +9,15 @@ class YamlSiteLoader {
         await this.loadProjectsData();
         this.renderProjects();
         this.updateSiteInfo();
-        
-        // Set up auto-refresh to sync with admin panel changes
-        this.setupAutoRefresh();
-    }
-
-    // Setup auto-refresh to sync with admin panel
-    setupAutoRefresh() {
-        // Listen for storage changes from admin panel
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'voltpro_settings' || 
-                e.key === 'voltpro_under_construction_projects' || 
-                e.key === 'voltpro_completed_projects') {
-                console.log('Detected changes from admin panel, refreshing...');
-                this.loadProjectsData().then(() => {
-                    this.renderProjects();
-                    this.updateSiteInfo();
-                });
-            }
-        });
     }
 
     // Load projects data from Decap CMS structure
     async loadProjectsData() {
         try {
-            // Try to load from localStorage first (to sync with admin panel)
-            const savedSettings = localStorage.getItem('voltpro_settings');
-            const savedWipProjects = localStorage.getItem('voltpro_under_construction_projects');
-            const savedCompletedProjects = localStorage.getItem('voltpro_completed_projects');
-            
-            let settings, wipProjects, completedProjects;
-            
-            if (savedSettings && savedWipProjects && savedCompletedProjects) {
-                // Load from localStorage (sync with admin panel)
-                settings = JSON.parse(savedSettings);
-                wipProjects = JSON.parse(savedWipProjects);
-                completedProjects = JSON.parse(savedCompletedProjects);
-                console.log('Loaded from localStorage (synced with admin panel)');
-            } else {
-                // Load from files (fallback)
-                const settingsResponse = await fetch('data/settings.json');
-                settings = await settingsResponse.json();
-                
-                const wipResponse = await fetch('data/wip/index.json');
-                wipProjects = await wipResponse.json();
-                
-                const doneResponse = await fetch('data/done/index.json');
-                completedProjects = await doneResponse.json();
-                console.log('Loaded from files (fallback)');
-            }
+            const [settings, wipProjects, completedProjects] = await Promise.all(
+                ['data/settings.json', 'data/wip/index.json', 'data/done/index.json']
+                    .map(url => fetch(url).then(r => r.json()))
+            );
             
             this.projectsData = {
                 projects: {
@@ -502,7 +462,7 @@ class YamlSiteLoader {
                 <h3>${project.title}</h3>
             </div>
             <div class="images">
-                ${project.images.map(img => `<img src="${img}" alt="${project.title}" loading="lazy">`).join('')}
+                ${project.images.map(img => `<img src="${this.thumbOf(img)}" data-full="${img}" alt="${project.title}" loading="lazy" onerror="if (this.src.indexOf('/thumbs/') > -1) this.src = this.dataset.full">`).join('')}
             </div>
             <div class="project-description">
                 <p>${project.description}</p>
@@ -510,6 +470,11 @@ class YamlSiteLoader {
         `;
         
         return projectDiv;
+    }
+
+    // نسخة صغيرة للمعرض (image/thumbs/...)، والكبيرة بتتفتح لما الزبون يدوس على الصورة
+    thumbOf(img) {
+        return img.replace(/^image\//, 'image/thumbs/');
     }
 
     // Update site information
@@ -530,15 +495,12 @@ class YamlSiteLoader {
             logo.innerHTML = `<i class="fas fa-bolt"></i> ${config.company_name.split(' ')[0]} <span>${config.company_name.split(' ')[1] || ''}</span>`;
         }
 
-        // Update contact info
-        const whatsappBtn = document.querySelector('.btn-primary[href*="wa.me"]');
-        if (whatsappBtn && config.contact?.whatsapp) {
-            whatsappBtn.href = `https://wa.me/${config.contact.whatsapp.replace(/\D/g, '')}`;
-        }
-
-        const whatsappFloat = document.querySelector('.whatsapp-float');
-        if (whatsappFloat && config.contact?.whatsapp) {
-            whatsappFloat.href = `https://wa.me/${config.contact.whatsapp.replace(/\D/g, '')}`;
+        // كل زراير الواتساب بتفتح على نفس الرقم وبرسالة جاهزة
+        if (config.contact?.whatsapp) {
+            const message = config.contact.whatsapp_message ? `?text=${encodeURIComponent(config.contact.whatsapp_message)}` : '';
+            document.querySelectorAll('a[href*="wa.me"]').forEach(link => {
+                link.href = `https://wa.me/${config.contact.whatsapp.replace(/\D/g, '')}${message}`;
+            });
         }
 
         // Update social links
@@ -660,7 +622,7 @@ class YamlSiteLoader {
         portfolioImages.forEach(img => {
             img.addEventListener('click', function() {
                 modal.classList.add('active');
-                modalImg.src = this.src;
+                modalImg.src = this.dataset.full || this.src;
                 modalImg.alt = this.alt;
                 document.body.style.overflow = 'hidden';
             });

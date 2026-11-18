@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     portfolioImages.forEach(img => {
         img.addEventListener('click', function() {
-            openModal(this.src, this.alt);
+            openModal(this.dataset.full || this.src, this.alt);
         });
     });
     
@@ -270,19 +270,6 @@ window.addEventListener('load', () => {
 window.addEventListener('error', (e) => {
     console.error('JavaScript error:', e.error);
 });
-
-// 14. Service Worker registration for PWA (optional)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('SW registered: ', registration);
-            })
-            .catch(registrationError => {
-                console.log('SW registration failed: ', registrationError);
-            });
-    });
-}
 
 // 15. Export functions for potential external use
 window.VoltPro = {
