@@ -1,5 +1,21 @@
 [
   {
+    "id": "studios-2026",
+    "title": "تشطيب وتأثيث شقتين استديو - من الصفر للتسليم",
+    "description": "تشطيب وتأثيث شقتين استديو من الصفر (أكتوبر - نوفمبر 2026)، مع تنفيذ أعمال الكهرباء بالكامل: تعليم مكان كل نقطة على الحوائط قبل التكسير، وتركيب العلب على خط ليزر واحد لتأتي كلها في مستوى واحد، وتمديد مواسير السقف بشكل منظم، ثم تجميع وتوصيل لوحتي التوزيع، وصولاً إلى الإضاءة المخفية والسبوتات.",
+    "year": "2026",
+    "client": "شقتين استديو سكني",
+    "category": "residential",
+    "status": "completed",
+    "images": [
+      "image/projects/studios-2026/01-elouda-ede2a-makhfeya.jpg",
+      "image/projects/studios-2026/02-ellawha-motashataba.jpg",
+      "image/projects/studios-2026/03-spotat-we-ede2a.jpg",
+      "image/projects/studios-2026/04-tony.jpg",
+      "image/projects/studios-2026/05-elab-elmatbakh.jpg"
+    ]
+  },
+  {
     "id": "riyadh-club",
     "title": "نادي الرياض - البنية التحتية الكهربائية",
     "description": "تنفيذ البنية التحتية الكهربائية بالكامل لنادٍ رياضي بالرياض عام 2024، وفق أعلى معايير الدقة وتوزيع الأحمال، ليعمل بكفاءة واستقرار تام وبلا أي أعطال حتى اليوم.",
